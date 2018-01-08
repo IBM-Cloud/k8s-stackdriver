@@ -32,12 +32,15 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 
+	"github.com/GoogleCloudPlatform/k8s-stackdriver/event-exporter/sinks"
+	"github.com/GoogleCloudPlatform/k8s-stackdriver/event-exporter/sinks/activitytracker"
 	"github.com/GoogleCloudPlatform/k8s-stackdriver/event-exporter/sinks/stackdriver"
 )
 
 var (
 	resyncPeriod       = flag.Duration("resync-period", 1*time.Minute, "Reflector resync period")
 	sinkOpts           = flag.String("sink-opts", "", "Parameters for configuring sink")
+	sinkProvider       = flag.String("sink-provider", sinks.SinkProviderGKE, "Provider for event storage: IBM or GKE")
 	prometheusEndpoint = flag.String("prometheus-endpoint", ":80", "Endpoint on which to "+
 		"expose Prometheus http handler")
 )
@@ -70,15 +73,32 @@ func main() {
 	defer glog.Flush()
 	flag.Parse()
 
-	sink, err := stackdriver.NewSdSinkFactory().CreateNew(strings.Split(*sinkOpts, " "))
-	if err != nil {
-		glog.Fatalf("Failed to initialize sink: %v", err)
+	// Choose the sink provider
+	var sink sinks.Sink
+	var err error
+	switch *sinkProvider {
+	case sinks.SinkProviderGKE:
+		// GKE Stackdriver
+		sink, err = stackdriver.NewSdSinkFactory().CreateNew(strings.Split(*sinkOpts, " "))
+		if err != nil {
+			glog.Fatalf("Failed to initialize sink: %v", err)
+		}
+	case sinks.SinkProviderIBM:
+		// IBM Activity Tracker
+		sink, err = activitytracker.NewAtSinkFactory().CreateNew(strings.Split(*sinkOpts, " "))
+		if err != nil {
+			glog.Fatalf("Failed to initialize sink: %v", err)
+		}
+	default:
+		// Fail on other stack providers
+		glog.Fatalf("Unsupported sink provider: %s", *sinkProvider)
 	}
+
+	// Prepare the Kubernetes client
 	client, err := newKubernetesClient()
 	if err != nil {
 		glog.Fatalf("Failed to initialize kubernetes client: %v", err)
 	}
-
 	eventExporter := newEventExporter(client, sink, *resyncPeriod)
 
 	// Expose the Prometheus http endpoint

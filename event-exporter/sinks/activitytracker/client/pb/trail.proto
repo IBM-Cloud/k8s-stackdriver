@@ -1,0 +1,189 @@
+// *********************************************************************
+//  Licensed Materials - Property of IBM
+//
+//  "Restricted Materials of IBM"
+//
+//  5737-E01
+//
+//  (C) Copyright IBM Corp. 2015, 2017 All Rights Reserved.
+//
+//  US Government Users Restricted Rights - Use, duplication, or
+//  disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+// *********************************************************************
+syntax = "proto3";
+
+package trail;
+option java_package = "com.ibm.alchemy.trail.v3";
+
+message TrailEventSet {
+  uint64 count = 1;
+  UpstreamService upstream_service = 2;
+  repeated TrailEventWK events = 3;
+}
+
+// WK = Well Known (by iauth and ledge)
+message TrailEventWK {
+  Meta meta = 1;
+  TrailEvent payload = 2;
+}
+
+message TrailEvent {
+  uint64 started_at = 1;
+  string client_ip = 2;
+  API   api = 3;
+  Latencies latencies = 4;
+  Request request = 5;
+  Response response = 6;
+  Consumer consumer = 7;
+}
+
+message UpstreamService {
+  string service_provider_name = 1;
+  string service_provider_region = 2;
+  string service_provider_project_id = 3;
+  string service_provider_account_id = 4;
+}
+
+message Request {
+  string method = 1;
+  string uri = 2;
+  string request_body = 3;
+  string size = 4;
+  string request_uri = 5;
+  map<string, string> querystring = 6;
+  map<string, string> headers = 7;
+}
+
+message Response {
+  uint32 status = 1;
+  string size = 2;
+  string response_body = 4;
+  map<string, string> headers = 5;
+}
+
+message API {
+  uint64 created_at = 1;
+  string upstream_url = 2;
+  string id = 3;
+  string name = 4;
+  string request_host = 5;
+}
+
+message Latencies {
+  uint32 request = 1;
+  uint32 kong = 2;
+  uint32 proxy = 3;
+}
+
+message Consumer {
+  string username = 1;
+  uint64 created_at = 2;
+  string id = 3;
+}
+
+// /////////////////////////
+// CADF PROTO DEFINITION
+// /////////////////////////
+message CadfEventSet {
+  uint64 count = 1;
+  UpstreamService upstream_service = 2;
+  repeated CadfEventWK events = 3;
+}
+
+// WK = Well Known (by iauth and ledge)
+message CadfEventWK {
+  Meta meta = 1;
+  CadfEvent payload = 2;
+}
+
+message CadfEvent {
+  string id = 1;
+  string typeURI = 2;
+  string eventType = 3;
+  string eventTime = 4;
+  string action = 5;
+  string outcome = 6;
+  string message = 7;
+  CadfResource initiator = 8;
+  CadfResource target = 9;
+  CadfResource observer = 10;
+  string requestPath = 11;
+  CadfReason reason = 12;
+  string severity = 13;
+  string name = 14;
+  CadfAttachment requestHeader = 15;
+  CadfAttachment requestBody = 16;
+  CadfAttachment responseHeader = 17;
+  CadfAttachment responseBody = 18;
+  string requestData = 19;
+  string responseData = 20;
+  repeated string tags = 21;
+  repeated CadfAttachment attachments = 22;
+  repeated CadfReporterstep reporterchain = 23;
+  CadfAPI  api = 24;
+  CadfLatencies latencies = 25;
+}
+
+message Meta {
+  string service_provider_name = 1;
+  string service_provider_region = 2;
+  string service_provider_project_id = 3;
+  repeated string user_account_ids = 4;
+  string user_space_id = 5;
+  string user_space_region = 6;
+  string service_client_ip = 7;
+  string service_provider_auth_type = 8;
+  string api_version = 9;
+}
+
+message CadfResource {
+  string id = 1;
+  string typeURI = 2;
+  string name = 3;
+  CadfHost host = 4;
+  CadfCredential credential = 5;
+  string project_id = 6;
+}
+
+message CadfHost {
+  string id = 1;
+  string address = 2;
+  string agent = 3;
+  string platform = 4;
+}
+
+message CadfCredential {
+  string token = 1;
+  string type = 2;
+}
+
+message CadfReason {
+  uint32 reasonCode = 1;
+  string reasonType = 2;
+}
+
+message CadfAttachment {
+  string typeURI = 1;
+  string contentType = 2;
+  string content = 3;
+}
+
+message CadfReporterstep {
+  string role = 1;
+  string reporterId = 2;
+  string reportedTime = 3;
+}
+
+message CadfAPI {
+  string createdAt = 1;
+  string targetUrl = 2;
+  string id = 3;
+  string name = 4;
+  string publicDns = 5;
+}
+
+message CadfLatencies {
+  uint32 request = 1;
+  uint32 target = 2;
+  uint32 observer = 3;
+}

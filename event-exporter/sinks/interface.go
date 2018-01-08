@@ -22,6 +22,13 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-stackdriver/event-exporter/watchers/events"
 )
 
+const (
+	// SinkProviderGKE events are stored in GKE Stackdriver
+	SinkProviderGKE = "GKE"
+	// SinkProviderIBM events are stored in IBM Activity Tracker
+	SinkProviderIBM = "IBM"
+)
+
 // Sink interface represents a generic sink that is responsible for handling
 // actions upon the event objects and filter the initial events list. Note,
 // that OnAdd method from the EventHandler interface will only receive
