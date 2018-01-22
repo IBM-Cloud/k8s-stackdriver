@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: at-config
+  namespace: default
+data:
+  CLUSTER_ID: cluster-id
+  ACCOUNT_ID: user-account-id
+  CLUSTER_LOCATION: dev
+  ACTIVITY_TRACKER_LOG_ROOT: /var/log/at
+  SERVICE_PROVIDER_ACCOUNT_ID: service-account-id
+  SERVICE_PROVIDER_NAME: event-exporter
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: event-exporter-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: event-exporter
+    spec:
+      containers:
+      - name: event-exporter
+        image: qrtp/event-exporter:v0.2
+        resources:
+          requests:
+            memory: "100Mi"
+        command: ["/event-exporter"]
+        args: ["-sink-provider", "IBM"]
+        volumeMounts:
+          - name: at-volume
+            mountPath: /var/log/at
+        envFrom:
+        - configMapRef:
+            name: at-config
+      volumes:
+        - name: at-volume
+          emptyDir: {}

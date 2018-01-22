@@ -87,7 +87,7 @@ var _ = Describe("Cadf", func() {
 		Expect(resp).NotTo(BeNil())
 		Expect(*resp).To(Equal(WriteLogEntriesResponse{
 			HTTPStatusCode: http.StatusOK,
-			Message:        "success",
+			Message:        "SUCCESS",
 		}))
 
 		By("closing the logger to force a filesystem sync")

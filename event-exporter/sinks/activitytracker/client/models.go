@@ -40,6 +40,14 @@ type LogEntry struct {
 	Timestamp       string
 }
 
+// GetPayload returns JSON payload if present, othewise text payload.
+func (l *LogEntry) GetPayload() string {
+	if l.JSONPayload != nil && len(l.JSONPayload) > 0 {
+		return string(l.JSONPayload)
+	}
+	return l.TextPayload
+}
+
 // MonitoredResource defines a resource
 type MonitoredResource struct {
 	Type   string

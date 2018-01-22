@@ -18,6 +18,7 @@ package activitytracker
 
 import (
 	go_json "encoding/json"
+	"os"
 	"time"
 
 	atClient "github.com/GoogleCloudPlatform/k8s-stackdriver/event-exporter/sinks/activitytracker/client"
@@ -64,19 +65,25 @@ func (f *atLogEntryFactory) FromEvent(event *api_v1.Event) *atClient.LogEntry {
 	return &atClient.LogEntry{
 		JSONPayload:     payload,
 		Outcome:         f.parseOutcome(event),
+		Timestamp:       event.LastTimestamp.Format(time.RFC3339Nano),
 		Reason:          event.Reason,
 		ResourceID:      event.InvolvedObject.Name,
 		ResourceType:    event.InvolvedObject.Kind,
 		SourceComponent: event.Source.Component,
-		Timestamp:       event.LastTimestamp.Format(time.RFC3339Nano),
 	}
 }
 
 func (f *atLogEntryFactory) FromMessage(msg string) *atClient.LogEntry {
+	// Retrieve hostname of the pod
+	hostname, _ := os.Hostname()
 	return &atClient.LogEntry{
-		TextPayload: msg,
-		Outcome:     atClient.EventTypeError,
-		Timestamp:   f.clock.Now().Format(time.RFC3339Nano),
+		TextPayload:     msg,
+		Outcome:         atClient.EventTypeSuccess,
+		Timestamp:       f.clock.Now().Format(time.RFC3339Nano),
+		Reason:          atClient.EventTypeInfo,
+		ResourceID:      hostname,
+		ResourceType:    atClient.GetServiceName(),
+		SourceComponent: atClient.GetServiceName(),
 	}
 }
 

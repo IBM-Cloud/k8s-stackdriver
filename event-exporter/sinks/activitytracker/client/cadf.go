@@ -29,7 +29,7 @@ func (service *Service) Write(req *WriteLogEntriesRequest) *WriteLogEntriesRespo
 
 	// Generate a list of CADF events to send to Activity Tracker
 	for i, entry := range req.Entries {
-		glog.Infof("processing event %d: %s %s %s", i, entry.Timestamp, entry.Outcome, string(entry.JSONPayload))
+		glog.Infof("processing event %d: %s %s %s", i, entry.Timestamp, entry.Outcome, entry.GetPayload())
 
 		// Serialize the event set
 		eventsetJSON, err := service.FromEntry(entry).SerializeJSON()
@@ -45,7 +45,7 @@ func (service *Service) Write(req *WriteLogEntriesRequest) *WriteLogEntriesRespo
 	// Event processing complete
 	return &WriteLogEntriesResponse{
 		HTTPStatusCode: http.StatusOK,
-		Message:        "success",
+		Message:        EventTypeSuccess,
 	}
 }
 
@@ -70,7 +70,7 @@ func (service *Service) FromEntry(event *LogEntry) *pb.CadfEventWK {
 			ProjectId: service.UserAccountID,
 			TypeURI:   GetCadfTypeURI(event.ResourceType),
 		},
-		RequestData: string(event.JSONPayload),
+		RequestData: event.GetPayload(),
 	}
 
 	// Create metadata for this event

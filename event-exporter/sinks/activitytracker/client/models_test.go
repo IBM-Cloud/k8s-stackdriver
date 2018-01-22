@@ -26,6 +26,24 @@ var _ = Describe("Models", func() {
 		Expect(service.Logger).NotTo(BeNil())
 	})
 
+	It("returns the expected JSON payload of a log entry object", func() {
+
+		By("returning the JSON payload when available")
+		entry := &LogEntry{
+			JSONPayload: []byte("jsonpayload"),
+			TextPayload: "textpayload",
+		}
+		Expect(entry.GetPayload()).To(Equal("jsonpayload"))
+	})
+
+	It("returns the text payload of a log entry object if JSON payload is missing", func() {
+		By("returning the JSON payload when available")
+		entry := &LogEntry{
+			TextPayload: "textpayload",
+		}
+		Expect(entry.GetPayload()).To(Equal("textpayload"))
+	})
+
 	Context("when an invalid logging directory is specified", func() {
 
 		BeforeEach(func() {

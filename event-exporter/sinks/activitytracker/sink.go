@@ -97,11 +97,6 @@ func (s *atSink) OnUpdate(oldEvent *api_v1.Event, newEvent *api_v1.Event) {
 	}
 
 	if newEvent.Count != oldCount+1 {
-		// Sink doesn't send a LogEntry to Stackdriver, b/c event compression might
-		// indicate that part of the watch history was lost, which may result in
-		// multiple events being compressed. This may create an unecessary
-		// flood in Stackdriver. Also this is a perfectly valid behavior for the
-		// configuration with empty backing storage.
 		glog.Infof("Event count has increased by %d != 1.\n"+
 			"\tOld event: %+v\n\tNew event: %+v", newEvent.Count-oldCount, oldEvent, newEvent)
 	}
@@ -125,7 +120,7 @@ func (s *atSink) OnList(list *api_v1.EventList) {
 }
 
 func (s *atSink) Run(stopCh <-chan struct{}) {
-	glog.Info("Starting Stackdriver sink")
+	glog.Info("Starting Activity Tracker sink")
 	for {
 		select {
 		case entry := <-s.logEntryChannel:
@@ -140,11 +135,11 @@ func (s *atSink) Run(stopCh <-chan struct{}) {
 			s.flushBuffer()
 			break
 		case <-stopCh:
-			glog.Info("Stackdriver sink recieved stop signal, waiting for all requests to finish")
+			glog.Info("Activity Tracker sink recieved stop signal, waiting for all requests to finish")
 			for i := 0; i < s.config.MaxConcurrency; i++ {
 				s.concurrencyChannel <- struct{}{}
 			}
-			glog.Info("All requests to Stackdriver finished, exiting Stackdriver sink")
+			glog.Info("All requests to Activity Tracker finished, exiting Activity Tracker sink")
 			return
 		}
 	}
@@ -159,12 +154,12 @@ func (s *atSink) flushBuffer() {
 
 func (s *atSink) sendEntries(entries []*atClient.LogEntry) {
 
-	glog.Infof("Sending %d entries to Stackdriver", len(entries))
+	glog.Infof("Sending %d entries to Activity Tracker", len(entries))
 	written := s.writer.Write(entries, s.logName, s.config.Resource)
 	successfullySentEntryCountAT.Add(float64(written))
 
 	<-s.concurrencyChannel
-	glog.Infof("Successfully sent %d entries to Stackdriver", len(entries))
+	glog.Infof("Successfully sent %d entries to Activity Tracker", len(entries))
 }
 
 func (s *atSink) getTimerChannel() <-chan time.Time {

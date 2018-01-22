@@ -50,6 +50,8 @@ const (
 	EventTypeError = "FAILURE"
 	// EventTypeSuccess indicates a successful event
 	EventTypeSuccess = "SUCCESS"
+	// EventTypeInfo indicates an informational event
+	EventTypeInfo = "INFO"
 )
 
 // GetClusterLocation location key of the IBM datacenter
