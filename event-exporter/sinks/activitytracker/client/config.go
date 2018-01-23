@@ -28,7 +28,7 @@ import (
  *   ACCOUNT_ID
  *   ACTIVITY_TRACKER_LOG_ROOT
  *   CLUSTER_ID
- *   CLUSTER_LOCATION
+ *   DATACENTER
  *   SERVICE_PROVIDER_ACCOUNT_ID
  *   SERVICE_PROVIDER_NAME
  */
@@ -38,9 +38,10 @@ const (
 	atCadfTypeURI = "http://schemas.dmtf.org/cloud/audit/1.0/event"
 	atClusterType = "kubernetes_cluster"
 
-	userLocationKey = "CLUSTER_LOCATION"
-	userClusterKey  = "CLUSTER_ID"
-	userAccountKey  = "ACCOUNT_ID"
+	userLocationKey    = "DATACENTER"
+	userClusterIDKey   = "CLUSTER_ID"
+	userClusterNameKey = "CLUSTER_NAME"
+	userAccountKey     = "ACCOUNT_ID"
 
 	serviceProviderAccountKey = "SERVICE_PROVIDER_ACCOUNT_ID"
 	serviceProviderName       = "SERVICE_PROVIDER_NAME"
@@ -66,7 +67,12 @@ func GetFormattedTimestamp() string {
 
 // GetClusterID unique ID for the cluster
 func GetClusterID() string {
-	return os.Getenv(userClusterKey)
+	return os.Getenv(userClusterIDKey)
+}
+
+// GetClusterName unique ID for the cluster
+func GetClusterName() string {
+	return os.Getenv(userClusterNameKey)
 }
 
 // GetServiceAccountID service provider account ID
@@ -93,6 +99,7 @@ func GetAtLogRoot() string {
 // in the running container to support the AT sink implementation.
 func OnIBM() bool {
 	return GetClusterID() != "" &&
+		GetClusterName() != "" &&
 		GetClusterLocation() != "" &&
 		GetUserAccountID() != "" &&
 		GetServiceAccountID() != "" &&

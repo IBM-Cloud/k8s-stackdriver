@@ -24,8 +24,12 @@ var _ = Describe("Config", func() {
 		Expect(GetClusterID()).To(Equal("CLUSTER_ID-VAL"))
 	})
 
+	It("retrieves the correct cluster name from environment", func() {
+		Expect(GetClusterName()).To(Equal("CLUSTER_NAME-VAL"))
+	})
+
 	It("retrieves the correct location from environment", func() {
-		Expect(GetClusterLocation()).To(Equal("CLUSTER_LOCATION-VAL"))
+		Expect(GetClusterLocation()).To(Equal("DATACENTER-VAL"))
 	})
 
 	It("retrieves the correct service account ID from environment", func() {

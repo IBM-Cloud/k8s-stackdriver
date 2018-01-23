@@ -36,7 +36,7 @@ var _ = Describe("SinkFactory", func() {
 				Labels: map[string]string{
 					"account_id": "ACCOUNT_ID-VAL",
 					"cluster_id": "CLUSTER_ID-VAL",
-					"location":   "CLUSTER_LOCATION-VAL",
+					"location":   "DATACENTER-VAL",
 				},
 			},
 		}))
@@ -56,7 +56,7 @@ var _ = Describe("SinkFactory", func() {
 				Labels: map[string]string{
 					"account_id": "ACCOUNT_ID-VAL",
 					"cluster_id": "CLUSTER_ID-VAL",
-					"location":   "CLUSTER_LOCATION-VAL",
+					"location":   "DATACENTER-VAL",
 				},
 			},
 		}))

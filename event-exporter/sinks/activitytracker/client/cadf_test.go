@@ -41,7 +41,7 @@ var _ = Describe("Cadf", func() {
 		cadfEvent := service.FromEntry(kubeEventEntry)
 		jsonString, err := cadfEvent.SerializeJSON()
 		Expect(err).NotTo(HaveOccurred())
-		Expect(jsonString).To(Equal("{\"meta\":{\"service_provider_name\":\"SERVICE_PROVIDER_NAME-VAL\",\"service_provider_region\":\"CLUSTER_LOCATION-VAL\",\"service_provider_project_id\":\"SERVICE_PROVIDER_ACCOUNT_ID-VAL\",\"user_account_ids\":[\"ACCOUNT_ID-VAL\"]},\"payload\":{\"typeURI\":\"http://schemas.dmtf.org/cloud/audit/1.0/event\",\"eventTime\":\"timestamp\",\"action\":\"resource_type.reason\",\"outcome\":\"outcome\",\"initiator\":{\"id\":\"CLUSTER_ID-VAL\",\"typeURI\":\"source_component\",\"name\":\"kubernetes_cluster.source_component\",\"project_id\":\"ACCOUNT_ID-VAL\"},\"target\":{\"id\":\"resource_id\",\"typeURI\":\"resource_type\",\"name\":\"kubernetes_cluster.resource_type\",\"project_id\":\"ACCOUNT_ID-VAL\"},\"requestData\":\"json_payload\"}}"))
+		Expect(jsonString).To(Equal("{\"meta\":{\"service_provider_name\":\"SERVICE_PROVIDER_NAME-VAL\",\"service_provider_region\":\"DATACENTER-VAL\",\"service_provider_project_id\":\"SERVICE_PROVIDER_ACCOUNT_ID-VAL\",\"user_account_ids\":[\"ACCOUNT_ID-VAL\"]},\"payload\":{\"typeURI\":\"http://schemas.dmtf.org/cloud/audit/1.0/event\",\"eventTime\":\"timestamp\",\"action\":\"resource_type.reason\",\"outcome\":\"outcome\",\"initiator\":{\"id\":\"CLUSTER_ID-VAL\",\"typeURI\":\"source_component\",\"name\":\"kubernetes_cluster.source_component\",\"project_id\":\"ACCOUNT_ID-VAL\"},\"target\":{\"id\":\"resource_id\",\"typeURI\":\"resource_type\",\"name\":\"kubernetes_cluster.resource_type\",\"project_id\":\"ACCOUNT_ID-VAL\"},\"requestData\":\"json_payload\"}}"))
 	})
 
 	It("translates a kubernetes event to CADF event", func() {
@@ -51,7 +51,7 @@ var _ = Describe("Cadf", func() {
 		Expect(*cadfEvent).To(Equal(pb.CadfEventWK{
 			Meta: &pb.Meta{
 				ServiceProviderName:      "SERVICE_PROVIDER_NAME-VAL",
-				ServiceProviderRegion:    "CLUSTER_LOCATION-VAL",
+				ServiceProviderRegion:    "DATACENTER-VAL",
 				ServiceProviderProjectId: "SERVICE_PROVIDER_ACCOUNT_ID-VAL",
 				UserAccountIds:           []string{"ACCOUNT_ID-VAL"},
 			},
@@ -96,6 +96,6 @@ var _ = Describe("Cadf", func() {
 		By("validating the file contents")
 		contents, err := ioutil.ReadFile("/tmp/event-exporter/CLUSTER_ID-VAL-events.log")
 		Expect(err).NotTo(HaveOccurred())
-		Expect(string(contents)).To(Equal("{\"meta\":{\"service_provider_name\":\"SERVICE_PROVIDER_NAME-VAL\",\"service_provider_region\":\"CLUSTER_LOCATION-VAL\",\"service_provider_project_id\":\"SERVICE_PROVIDER_ACCOUNT_ID-VAL\",\"user_account_ids\":[\"ACCOUNT_ID-VAL\"]},\"payload\":{\"typeURI\":\"http://schemas.dmtf.org/cloud/audit/1.0/event\",\"eventTime\":\"timestamp\",\"action\":\"resource_type.reason\",\"outcome\":\"outcome\",\"initiator\":{\"id\":\"CLUSTER_ID-VAL\",\"typeURI\":\"source_component\",\"name\":\"kubernetes_cluster.source_component\",\"project_id\":\"ACCOUNT_ID-VAL\"},\"target\":{\"id\":\"resource_id\",\"typeURI\":\"resource_type\",\"name\":\"kubernetes_cluster.resource_type\",\"project_id\":\"ACCOUNT_ID-VAL\"},\"requestData\":\"json_payload\"}}\n"))
+		Expect(string(contents)).To(Equal("{\"meta\":{\"service_provider_name\":\"SERVICE_PROVIDER_NAME-VAL\",\"service_provider_region\":\"DATACENTER-VAL\",\"service_provider_project_id\":\"SERVICE_PROVIDER_ACCOUNT_ID-VAL\",\"user_account_ids\":[\"ACCOUNT_ID-VAL\"]},\"payload\":{\"typeURI\":\"http://schemas.dmtf.org/cloud/audit/1.0/event\",\"eventTime\":\"timestamp\",\"action\":\"resource_type.reason\",\"outcome\":\"outcome\",\"initiator\":{\"id\":\"CLUSTER_ID-VAL\",\"typeURI\":\"source_component\",\"name\":\"kubernetes_cluster.source_component\",\"project_id\":\"ACCOUNT_ID-VAL\"},\"target\":{\"id\":\"resource_id\",\"typeURI\":\"resource_type\",\"name\":\"kubernetes_cluster.resource_type\",\"project_id\":\"ACCOUNT_ID-VAL\"},\"requestData\":\"json_payload\"}}\n"))
 	})
 })
