@@ -5,11 +5,12 @@ metadata:
   namespace: default
 data:
   CLUSTER_ID: cluster-id
+  CLUSTER_NAME: cluster-name
   ACCOUNT_ID: user-account-id
-  CLUSTER_LOCATION: dev
-  ACTIVITY_TRACKER_LOG_ROOT: /var/log/at
+  DATACENTER: dev
   SERVICE_PROVIDER_ACCOUNT_ID: service-account-id
   SERVICE_PROVIDER_NAME: event-exporter
+  ACTIVITY_TRACKER_LOG_ROOT: /var/log/at
 ---
 apiVersion: apps/v1beta1
 kind: Deployment
