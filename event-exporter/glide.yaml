@@ -1,0 +1,44 @@
+package: github.com/GoogleCloudPlatform/k8s-stackdriver/event-exporter
+import:
+- package: cloud.google.com/go
+  subpackages:
+  - compute/metadata
+- package: github.com/golang/glog
+- package: github.com/golang/protobuf
+  subpackages:
+  - proto
+- package: github.com/prometheus/client_golang
+  subpackages:
+  - prometheus
+  - prometheus/promhttp
+- package: github.com/qrtp/lumber
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: golang.org/x/oauth2
+  subpackages:
+  - google
+- package: google.golang.org/api
+  subpackages:
+  - gensupport
+  - googleapi
+  - logging/v2
+- package: k8s.io/apimachinery
+  subpackages:
+  - pkg/apis/meta/v1
+  - pkg/runtime
+  - pkg/runtime/serializer
+  - pkg/runtime/serializer/json
+  - pkg/util/clock
+  - pkg/watch
+- package: k8s.io/client-go
+  version: 450baa5d60f8d6a251c7682cb6f86e939b750b2d
+  subpackages:
+  - kubernetes
+  - kubernetes/scheme
+  - pkg/api/v1
+  - rest
+  - tools/cache
+testImport:
+- package: github.com/onsi/ginkgo
+- package: github.com/onsi/gomega
