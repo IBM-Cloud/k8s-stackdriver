@@ -1,19 +1,55 @@
-sudo: required
+language: go
+
+go:
+  - 1.9.1
+  - tip
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - go: tip
+
+cache:
+  bundler: true
+
+sudo: true
 
 services:
   - docker
 
-language: go
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:masterminds/glide'
+    packages:
+      - glide
+      - bc
 
-matrix:
-  include:
-    - go: 1.8
+before_install:
+  - curl -s https://s3-api.us-geo.objectstorage.softlayer.net/armada-config/build-tools/build-tools.tar.gz |tar -xvz
+  - ./build-tools/install.sh
+  - sudo pip --quiet install yamllint
 
-install:
-  - hack/install-verify-tools.sh
-  - export PATH=$GOPATH/bin:$PATH
-  - hack/for-go-proj.sh install
+before_script:
+  - ./hack/ibm-activity-tracker-deps.sh
 
 script:
-  - hack/verify-all.sh -v
-  - hack/for-go-proj.sh test
+  - yamllint .travis.yml services/.
+  - ./hack/ibm-activity-tracker-validate.sh
+  - docker images
+  - ./build-tools/process.sh services/k8s-stackdriver
+
+deploy:
+  - provider: script
+    script: ./build-tools/deploy.sh
+    skip_cleanup: true
+    on:
+      branch: master
+      go: '1.9.1'
+  - provider: script
+    script: ./build-tools/deploy.sh
+    skip_cleanup: true
+    on:
+      tags: true
+      condition: ${TRAVIS_TAG} == dev-*
+      go: '1.9.1'
